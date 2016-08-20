@@ -1,10 +1,14 @@
 #include <FastLED.h>
 
-#define NUM_PWR_IO 4
+#define NUM_PWR_IO 3
 #define NUM_LEDS 34
 #define LED_PIN 11
 #define FLUCT_THRESH 10
 #define IDLE_SECONDS 5
+#define ACTIVE 20, 200, 255
+#define PASSIVE 255, 140, 20
+#define PULSE_CYCLE 4000
+#define RUN_DELAY 50
 int handle_rgb_light(struct pwr_io_ctrl ctrls[NUM_PWR_IO]);
 int handle_light_adjustment(struct pwr_io_ctrl ctrls[NUM_PWR_IO]);
 int update_value(struct pwr_io_ctrl *ctrl_obj);
@@ -18,13 +22,22 @@ struct pwr_io_ctrl{
   int base_color[3];
 };
 
+struct pulse {
+  int calls_per_cycle;
+  float current_color[3];
+  int pulse_color[3];
+  int retracting;
+};
 //Initialize Input pin & Output Pin pairs 
-struct pwr_io_ctrl io1 = {3, 1, 0, 0, {0, 180, 255}};
+struct pwr_io_ctrl io1 = {3, 1, 0, 0, {0, 255, 255}};
 struct pwr_io_ctrl io2 = {9, 6, 0, 0, {255, 255, 0}};
-struct pwr_io_ctrl io3 = {6, 4, 0, 0, {120, 0, 255}};
-struct pwr_io_ctrl io4 = {5, 2, 0, 0, {80, 255, 0}};
+struct pwr_io_ctrl io3 = {5, 4, 0, 0, {120, 0, 255}};
+//struct pwr_io_ctrl io4 = {6, 2, 0, 0, {80, 255, 0}};
 
-struct pwr_io_ctrl ctrls[NUM_PWR_IO] = {io1, io2, io3, io4};
+struct pwr_io_ctrl ctrls[NUM_PWR_IO] = {io1, io2, io3};
+
+struct pulse passive_pulse  = {PULSE_CYCLE / RUN_DELAY, {0.0, 0.0, 0.0}, {PASSIVE}, 0};
+struct pulse active_pulse   = {PULSE_CYCLE / RUN_DELAY, {0.0, 0.0, 0.0}, {ACTIVE}, 0};
 //Define RGB LED array
 CRGB leds[NUM_LEDS];
 
@@ -49,8 +62,50 @@ void loop() {
   Serial.print(", val: ");
   Serial.print(analogRead(io1.analog_in_pin));
   Serial.println();
-  delay(50);
+  delay(RUN_DELAY);
 }
+
+
+int light_pulse(struct pulse *p) {
+  float steps[3]  =  {(float)p->pulse_color[0] / p->calls_per_cycle, 
+                      (float)p->pulse_color[1] / p->calls_per_cycle,
+                      (float)p->pulse_color[2] / p->calls_per_cycle};
+  
+  if (p->retracting) {
+    p->current_color[0] -= steps[0];
+    p->current_color[1] -= steps[1];
+    p->current_color[2] -= steps[2]; 
+    
+    if (p->current_color[0] <= 0 ||
+        p->current_color[0] <= 0 ||
+        p->current_color[0] <= 0) {
+      p->current_color[0] = 0.0; 
+      p->current_color[1] = 0.0;
+      p->current_color[2] = 0.0;     
+      p->retracting = 0; 
+    }
+  }
+  else {
+    p->current_color[0] += steps[0];
+    p->current_color[1] += steps[1];
+    p->current_color[2] += steps[2]; 
+     
+    if (p->current_color[0] >= p->pulse_color[0] ||
+        p->current_color[1] >= p->pulse_color[1] ||
+        p->current_color[2] >= p->pulse_color[2]) {
+
+      p->current_color[0] = (float)p->pulse_color[0]; 
+      p->current_color[1] = (float)p->pulse_color[1]; 
+      p->current_color[2] = (float)p->pulse_color[2];      
+      p->retracting = 1;    
+    }
+  }
+  
+  set_led_color((int)p->current_color[0], 
+                (int)p->current_color[1],
+                (int)p->current_color[2]);
+}
+
 
 /** Set the circle of RGB leds to correspond to
  *  the value fetched by the potentiometer, as
@@ -74,6 +129,7 @@ int set_rgb_circle(struct pwr_io_ctrl *ctrl) {
  */
 int handle_rgb_light(struct pwr_io_ctrl ctrls[NUM_PWR_IO]) {
   int i;
+  int off = 1;
   unsigned long curtime = millis(), lowest_diff = curtime;
   struct pwr_io_ctrl *lowest_ctrl = NULL;
 
@@ -83,12 +139,19 @@ int handle_rgb_light(struct pwr_io_ctrl ctrls[NUM_PWR_IO]) {
       lowest_ctrl = &ctrls[i];
       lowest_diff = measure_diff;
     }
+    
+    if (ctrls[i].current_value != 0)
+      off = 0;
   }
 
   if (lowest_ctrl != NULL) 
     set_rgb_circle(lowest_ctrl);
-  else
-   set_led_color(0, 255, 70);
+  else {
+   if (off)
+     light_pulse(&passive_pulse);
+   else
+     light_pulse(&active_pulse);
+  }
     
   return 0;
 }
@@ -129,4 +192,3 @@ int set_led_color(int color1, int color2, int color3) {
  FastLED.show(); 
  return 0;
 }
-
