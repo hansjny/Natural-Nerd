@@ -9,6 +9,7 @@
 #define PASSIVE 255, 140, 20
 #define PULSE_CYCLE 4000
 #define RUN_DELAY 50
+
 int handle_rgb_light(struct pwr_io_ctrl ctrls[NUM_PWR_IO]);
 int handle_light_adjustment(struct pwr_io_ctrl ctrls[NUM_PWR_IO]);
 int update_value(struct pwr_io_ctrl *ctrl_obj);
