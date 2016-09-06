@@ -1,36 +1,38 @@
-// Include FastLED library
 #include <FastLED.h>
 
-// Define pins and constants for ease of use.
+#define DEBUG 0
+
 #define NUM_PWR_IO 3
 #define NUM_LEDS 34
 #define LED_PIN 11
 #define FLUCT_THRESH 10
-#define IDLE_SECONDS 5
+
+// Color scheme 
 #define ACTIVE 20, 200, 255
 #define PASSIVE 255, 140, 20
+
+// Timing
 #define PULSE_CYCLE 4000
 #define RUN_DELAY 50
+#define IDLE_SECONDS 5
 
-// Create parameters for editing later.
 int handle_rgb_light(struct pwr_io_ctrl ctrls[NUM_PWR_IO]);
 int handle_light_adjustment(struct pwr_io_ctrl ctrls[NUM_PWR_IO]);
 int update_value(struct pwr_io_ctrl *ctrl_obj);
 int set_led_color(int color1, int color2, int color3);
 
-// Create structs
 // pwr_io_ctrl is used for storing all of the values pertaining to a specific input/output. 
 struct pwr_io_ctrl{
   int out_pin;                  // Digital output pin
   int analog_in_pin;            // Analog input pin
   int current_value;            // Current brightness value
-  unsigned long last_touched;   // Whether this was the last button touched
+  unsigned long last_touched;   // Time when knob was last turned
   int base_color[3];            
-    /** 3 value array describing RGB color (0-255). This base_color value is used whenever the 
-     *  brightness is being adjusted. For example, if the user turns first knob, the lights 
-     *  inside the control box will turn cyan and a number of lights will turn on. The number
-     *  of lights are used to indicate the brightness setting of the first output.
-     */
+  /** 3 value array describing RGB color (0-255). This base_color value is used whenever the 
+   *  brightness is being adjusted. For example, if the user turns first knob, the lights 
+   *  inside the control box will turn cyan and a number of lights will turn on. The number
+   *  of lights are used to indicate the brightness setting of the first output.
+   */
 };
 
 // Pulse is used for pulsing a color regularly over a base color
@@ -78,25 +80,27 @@ void loop() {
 
   handle_light_adjustment(ctrls);
   handle_rgb_light(ctrls);
-
-  Serial.print("PIN: ");
-  Serial.print(io1.analog_in_pin);
-  Serial.print(", val: ");
-  Serial.print(analogRead(io1.analog_in_pin));
-  Serial.println();
   
-  Serial.print("PIN: ");
-  Serial.print(io2.analog_in_pin);
-  Serial.print(", val: ");
-  Serial.print(analogRead(io2.analog_in_pin));
-  Serial.println();
-  
-  Serial.print("PIN: ");
-  Serial.print(io3.analog_in_pin);
-  Serial.print(", val: ");
-  Serial.print(analogRead(io3.analog_in_pin));
-  Serial.println();
-  
+  /** Debug outputs **/
+  if (DEBUG) {
+    Serial.print("PIN: ");
+    Serial.print(io1.analog_in_pin);
+    Serial.print(", val: ");
+    Serial.print(analogRead(io1.analog_in_pin));
+    Serial.println();
+    
+    Serial.print("PIN: ");
+    Serial.print(io2.analog_in_pin);
+    Serial.print(", val: ");
+    Serial.print(analogRead(io2.analog_in_pin));
+    Serial.println();
+    
+    Serial.print("PIN: ");
+    Serial.print(io3.analog_in_pin);
+    Serial.print(", val: ");
+    Serial.print(analogRead(io3.analog_in_pin));
+    Serial.println();
+  }
   delay(RUN_DELAY);
 }
 
