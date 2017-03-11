@@ -9,7 +9,9 @@
 //The pin that we read sensor values form
 #define ANALOG_READ 0
 
-
+//Confirmed microphone low value, and max value
+#define MIC_LOW 0.0
+#define MIC_HIGH 737.0
 /** Other macros */
 //How many previous sensor values effects the operating average?
 #define AVGLEN 5
@@ -150,7 +152,7 @@ void check_high(int avg) {
 
 //Main function for visualizing the sounds in the lamp
 void visualize_music() {
-	int sensor_value, mapped, avg, show_amount, longavg;
+	int sensor_value, mapped, avg, longavg;
 	
 	//Actual sensor value
 	sensor_value = analogRead(ANALOG_READ);
@@ -160,7 +162,7 @@ void visualize_music() {
 		return;
 
 	//Discard readings that deviates too much from the past avg.
-	mapped = (float)fscale(0.0, 737.0, 0.0, (float)737, (float)sensor_value, 2.0);
+	mapped = (float)fscale(MIC_LOW, MIC_HIGH, MIC_LOW, (float)MIC_HIGH, (float)sensor_value, 2.0);
 	avg = compute_average(avgs, AVGLEN);
 
 	if (((avg - mapped) > avg*DEV_THRESH)) //|| ((avg - mapped) < -avg*DEV_THRESH))
@@ -197,8 +199,7 @@ void visualize_music() {
 	}
 
 	//Decides how many of the LEDs will be lit
-	show_amount = (float)fscale(0.0, 737.0, 0.0, 255, (float)avg, 1.5);
-	curshow = fscale(0.0, 737.0, 0.0, (float)NUM_LEDS, (float)avg, -1);
+	curshow = fscale(MIC_LOW, MIC_HIGH, 0.0, (float)NUM_LEDS, (float)avg, -1);
 
 	/*Set the different leds. Control for too high and too low values.
           Fun thing to try: Dont account for overflow in one direction, 
