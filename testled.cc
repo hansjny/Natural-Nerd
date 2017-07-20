@@ -3,6 +3,7 @@
 #define LED_PIN 1
 #define NUM_LEDS 10
 
+CRGB leds[NUM_LEDS];
 
 void setup() { 
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
