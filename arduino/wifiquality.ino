@@ -2,7 +2,6 @@
 #include <FastLED.h>
 
 #define DATA_PIN 2
-#define LED_MAX_LIGHTVALUE 255
 #define NUM_LEDS 20
 
 const char* password = "pass";
