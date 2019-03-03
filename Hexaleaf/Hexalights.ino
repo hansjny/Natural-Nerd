@@ -46,12 +46,48 @@ BLYNK_WRITE(V3)
     Serial.printf("Secondary: (%d, %d, %d) \n", r, g, b);
 }
 
+/* Get the min animation time */
+BLYNK_WRITE(V4)
+{
+  uint16_t pinValue = param.asInt();
+  hexController->set_fadetime_min(pinValue * 10);
+}
+
+/* Get the animation time */
+BLYNK_WRITE(V5)
+{
+  uint16_t pinValue = param.asInt();
+  hexController->set_fadetime_max(pinValue * 10);
+}
+
+/* Hue randomness */
+BLYNK_WRITE(V6)
+{
+  uint8_t pinValue = param.asInt(); 
+  hexController->set_hue_randomness(pinValue);
+}
+
 long ctr = 0;
 void loop() {
     Blynk.run();
     hexController->update();
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

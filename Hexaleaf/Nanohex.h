@@ -4,7 +4,7 @@
 /* Number of LEDs in each box/leaf */
 #define LEDS_IN_BOX 13
 /*The number of boxes */
-#define NUM_BOXES 7
+#define NUM_BOXES 8
 /*The pin the LED is connected to */
 #define LED_PIN 19
 /*Don't change unless you know what you're doing */
@@ -74,12 +74,13 @@ class Hexnode
         compute_fade_vector();
     }
 
-    void set_static_color(CRGB c) {
+    void set_static_color(CRGB c)
+    {
         pulsing = false;
         animating = false;
         color = c;
     }
-    void start_pulse(CRGB to, CRGB from, uint16_t pDelay, uint16_t pSpeed, uint16_t count, bool force) 
+    void start_pulse(CRGB to, CRGB from, uint16_t pDelay, uint16_t pSpeed, uint16_t count, bool force)
     {
         if (!pulsing || force)
         {
@@ -111,31 +112,30 @@ class Hexnode
 
     int draw()
     {
-        if (pulsing && !animating) {
-            if (millis() - peakTimer > peakDelay )
+        if (pulsing && !animating)
+        {
+            if (millis() - peakTimer > peakDelay)
             {
                 if (numberOfPulses == pulseCount)
                 {
                     pulsing = false;
                     numberOfPulses = 0;
                 }
-                else 
+                else
                 {
                     CRGB tmp = colorAlt;
                     colorAlt = colorTo;
                     set_color(tmp);
                 }
-
             }
         }
         else if (animating)
         {
-            color_update(); 
+            color_update();
             if (millis() - startDrawTimer >= fadeTimeMs)
             {
                 animating = false;
                 peakTimer = millis();
-                Serial.printf("Done animating. \n");
             }
         }
 
@@ -156,7 +156,10 @@ class Nanohex
     unsigned long modeTimer;
     CRGB primary;
     CRGB secondary;
+    uint32_t fadeTimeMin;
+    uint32_t fadeTimeMax;
     uint16_t mode;
+    uint8_t hueRandomness;
     bool interrupt;
 
   public:
@@ -164,8 +167,11 @@ class Nanohex
                 modeTimer(0),
                 mode(1),
                 drawEveryNthMs(60),
-                primary(CRGB(0,60,120)),
-                secondary(CRGB(0,0,0)),
+                primary(CRGB(0, 60, 120)),
+                secondary(CRGB(0, 0, 0)),
+                fadeTimeMin(3000),
+                fadeTimeMax(7000),
+                hueRandomness(50),
                 interrupt(false)
     {
         FastLED.addLeds<WS2812B, LED_PIN, BRG>(leds, TOTAL_LEDS);
@@ -173,13 +179,39 @@ class Nanohex
             nodes[i] = new Hexnode(i);
     }
 
-    void set_primary(CRGB c) {
+    void set_hue_randomness(uint8_t val)
+    {
+        hueRandomness = val;
+        interrupt = true;
+    }
+
+    void set_fadetime_min(uint32_t val)
+    {
+        if (val > fadeTimeMax)
+            val = fadeTimeMax;
+        fadeTimeMin = val;
+        Serial.printf("Minimum fade time %d s\n", (fadeTimeMin / 1000));
+        interrupt = true;
+    }
+
+    void set_fadetime_max(uint32_t val)
+    {
+        if (val < fadeTimeMin)
+            val = fadeTimeMin;
+        fadeTimeMax = val;
+        Serial.printf("Maximum fade time %d s \n", (fadeTimeMax / 1000));
+        interrupt = true;
+    }
+
+    void set_primary(CRGB c)
+    {
         modeTimer = 0;
         primary = c;
         interrupt = true;
     }
 
-    void set_secondary(CRGB c) {
+    void set_secondary(CRGB c)
+    {
         modeTimer = 0;
         secondary = c;
         interrupt = true;
@@ -190,40 +222,57 @@ class Nanohex
         nodes[idx]->set_color(color);
     }
 
-    void set_mode(uint8_t m) {
+    void set_mode(uint8_t m)
+    {
         modeTimer = 0;
         mode = m;
     }
-    void mode_static_color() {
+    void mode_static_color()
+    {
         for (uint8_t i = 0; i < NUM_BOXES; i++)
             nodes[i]->set_static_color(primary);
     }
 
-    void mode_random_twinkle()
+    void mode_binary_twinkle()
     {
         for (uint8_t i = 0; i < NUM_BOXES; i++)
-            nodes[i]->start_pulse(primary, secondary, 300, random(3000, 7000), 1, interrupt);
+            nodes[i]->start_pulse(primary, secondary, 300, random(fadeTimeMin, fadeTimeMax), 1, interrupt);
 
-        if (interrupt) interrupt = false;
-        modeTimer = millis();
+    }
+
+    void mode_hue_twinkle() 
+    {
+        CHSV c = rgb2hsv_approximate(primary);
+        for (uint8_t i = 0; i < NUM_BOXES; i++)
+        {
+            CHSV color2 = CHSV(c.hue + random(-hueRandomness / 2, hueRandomness / 2), 255, 255);
+            CHSV color1 = CHSV(c.hue + random(-hueRandomness / 2, hueRandomness / 2), c.sat, c.val);
+            nodes[i]->start_pulse(color1, color2, 300, random(fadeTimeMin, fadeTimeMax), 1, interrupt);
+        }
     }
 
     void update()
     {
-        if (millis() - modeTimer > 3000) 
+        if (millis() - modeTimer > 3000)
         {
             switch (mode)
             {
-                case 1:
-                    mode_static_color();
-                    break;
-                case 2:
-                    mode_random_twinkle();
-                    break;
-                default:
-                    mode_static_color();
-                    break;
+            case 1:
+                mode_static_color();
+                break;
+            case 2:
+                mode_binary_twinkle();
+                break;
+            case 3:
+                mode_hue_twinkle();
+                break;
+            default:
+                mode_static_color();
+                break;
             }
+            if (interrupt)
+                interrupt = false;
+            modeTimer = millis();
         }
 
         if (millis() - lastDrew > drawEveryNthMs)
