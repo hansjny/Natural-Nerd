@@ -1,4 +1,5 @@
-### Natural Nerd code repository
+### Nerdforge Code Repository
+This repository contains a collection of all the project-code used in projects.
 
 #### Project
 * [Hexaleaf Aurora](https://github.com/hansjny/Natural-Nerd/tree/master/Hexaleaf)
