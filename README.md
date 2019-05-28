@@ -1,5 +1,5 @@
 ### Nerdforge Code Repository
-This repository contains a collection of all the project-code used in projects.
+This repository contains a collection of code to Arduino and other projects. Mainly LEDs/Arduino. 
 
 #### Project
 * [Hexaleaf Aurora](https://github.com/hansjny/Natural-Nerd/tree/master/Hexaleaf)
