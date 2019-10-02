@@ -2,6 +2,7 @@
 This repository contains a collection of code to Arduino and other projects. Mainly LEDs/Arduino. 
 
 #### Project
+* [Enchanted Book Effect](https://github.com/hansjny/Natural-Nerd/blob/master/arduino/enchanted_book_fade.ino)
 * [Torch LED Code](https://github.com/hansjny/Natural-Nerd/blob/master/arduino/torchlight.ino)
 * [Hexaleaf Aurora](https://github.com/hansjny/Natural-Nerd/tree/master/Hexaleaf)
 * [Music Visualizing Lamps](https://github.com/hansjny/Natural-Nerd/tree/master/SoundReactive2)
