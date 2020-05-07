@@ -1,0 +1,42 @@
+body {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 16px;
+}
+
+#canvas {
+    cursor: url('pencilsmall.png') -10 40, pointer;
+}
+#toolbar {
+    cursor: url('pencilsmall.png');
+    margin-left: 20px;
+    flex: 1; 
+    background-color: #111;
+    max-width: 80px;
+    padding: 10 5 5 5;
+    font-weight: 700;
+    color: #eee;
+}
+
+#toolbar .button {
+    width: 100%
+}
+
+#toolbar .button .icon {
+    margin-left: -12px;
+}
+
+#steps {
+    font-weight: 700;
+}
+
+#controls {
+        margin-top: 15px;
+}
+
+#controls .button {
+    width: 100px;
+}
+
+#controls .button .icon {
+    margin-left: -12px;
+}

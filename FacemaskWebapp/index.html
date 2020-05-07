@@ -1,0 +1,61 @@
+<html>
+
+<head>
+    <script src="animation_app.js"></script>
+    <script src="jquery-3.5.1.slim.min.js"></script>
+    <script src="jscolor.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,400;0,700;1,200;1,300;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="semantic-ui/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="animation_app.css">
+
+
+</head>
+
+<body>
+    <div id="painting_area" style="display: flex">
+        <div id="animationArea" style="flex: 0 0 65%; max-width: 1117px; background-color: #111; padding: 10 10 10 10; display: inline-block;">
+            <canvas id="canvas" width="1093" height="427">
+
+            </canvas>
+        </div>
+        <div id="toolbar" style="">
+            <p>TOOLBAR</p>
+        <p><div class="ui vertical animated button" tabindex="0" onClick="set_mode('pencil')">
+            <i class="pencil alternate icon"></i>
+        </div></p>
+            <input class="jscolor {mode:'HS', position:'right'}" style="height:70px; width: 70px; text-align:center" onchange=set_color(this.jscolor)>
+        <p><div class="ui vertical animated button" tabindex="0" onClick="set_mode('eraser')">
+            <i class="eraser icon"></i>
+        </div></p>
+        <p style='margin-top: 140px;'>
+            <div class="ui button" tabindex="0" onClick="clear_all()">
+            Clear all
+        </div></p>
+         <p><div class="ui button" tabindex="0" onClick="export_format()">
+                Export
+        </div></p>
+        </div>
+    </div>  
+
+    <div id="controls">
+        <div class="ui vertical animated button" tabindex="0" onClick="step_backward()">
+            <i class="step backward icon"></i>
+        </div>
+        <div class="ui vertical animated button" tabindex="0" onClick="step_forward()">
+            <i class="step forward icon"></i>
+        </div>
+        <div class="ui vertical animated button" tabindex="0" onClick="play()">
+            <i class="play icon"></i>
+        </div>
+        <div class="ui vertical animated button" tabindex="0" onClick="stop()">
+            <i class="pause icon"></i>
+        </div>
+        <span id="steps">STEP <span id="currentStep">0</span> OF <span id="totalSteps">0</span></span>
+    </div>
+</body>
+
+</html>
+
+<script type="text/javascript">
+    start_draw();
+</script>
