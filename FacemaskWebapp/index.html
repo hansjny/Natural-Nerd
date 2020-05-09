@@ -31,7 +31,7 @@
             <div class="ui button" tabindex="0" onClick="clear_all()">
             Clear all
         </div></p>
-         <p><div class="ui button" tabindex="0" onClick="export_format()">
+         <p><div class="ui button" tabindex="0" onClick="export_format  ()">
                 Export
         </div></p>
         </div>
@@ -49,6 +49,15 @@
         </div>
         <div class="ui vertical animated button" tabindex="0" onClick="stop()">
             <i class="pause icon"></i>
+        </div>
+        <div class="ui vertical animated button" style="width:130px" tabindex="0" onClick="newStep()">
+            <span style="margin-left:-10px">New step</span>
+        </div>
+        <div class="ui vertical animated button" style="width:130px" tabindex="0" onClick="copyLast()">
+            <span style="margin-left:-10px">Copy last</span>
+        </div>
+        <div class="ui vertical animated button" style="width:130px" tabindex="0" onClick="removeStep()">
+            <span style="margin-left:-10px">Remove step</span>
         </div>
         <span id="steps">STEP <span id="currentStep">0</span> OF <span id="totalSteps">0</span></span>
     </div>

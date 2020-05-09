@@ -108,7 +108,13 @@ class Animation
         {
 
             let totalColorsInCurrentStep = Object.keys(this.colors[i]).length;
-            console.log(totalColorsInCurrentStep);
+
+            if (totalColorsInCurrentStep === 0 && totalAnimationSteps === 0)
+            {
+                console.log("Nothing to export.")
+                return;
+            }
+
             writeUint16(totalColorsInCurrentStep, data);
 
             for (const color of Object.keys(this.colors[i])) 
@@ -138,15 +144,38 @@ class Animation
 
     }
 
+    update() 
+    {
+        this.update_led_state();
+        this.draw();
+    }
+    newStep(copyLast = false) 
+    {
+        this.stepCount++;
+        this.currentIndex = this.stepCount;
+        this.colors.push({});
+        this.update();
+
+        if (copyLast && this.stepCount >= 1) 
+        {
+            for (const color of Object.keys(this.colors[this.currentIndex - 1])) 
+            {
+                this.colors[this.currentIndex][color] = 1;
+            }
+
+            this.leds.forEach(led => {
+                led.copyLast();
+            });
+        }
+        this.update();
+    }
+
     step_forward() 
     {
-        this.currentIndex++;
-        if (this.currentIndex > this.stepCount) {
-            this.stepCount = this.currentIndex;
-            this.colors.push({});
+        if (this.currentIndex < this.stepCount) {
+            this.currentIndex++;
         }
-        this.update_led_state();
-        this.draw()
+        this.update();
     }
     
     clear_all() 
@@ -154,15 +183,14 @@ class Animation
         this.leds.forEach(led => {
             led.updateColor(CONFIG["none_color"]);
         });
-        this.draw();
+        this.update();
     }
     step_backward() 
     {
         this.currentIndex--;
         if (this.currentIndex < 0)
             this.currentIndex = 0;
-        this.update_led_state();
-        this.draw()
+        this.update();
     }
 
     update_led_state() 
@@ -174,15 +202,15 @@ class Animation
 
     animationStep() 
     {
+
         if (this.stepCount == 0) 
         {
             this.stop();
             return;
         }
-        this.currentIndex = (this.currentIndex % (this.stepCount + 1))
-        this.update_led_state();
-        this.draw();
         this.currentIndex++;
+        this.currentIndex = (this.currentIndex % (this.stepCount + 1))
+        this.update();
     }
     
     set_color(color)
@@ -192,14 +220,35 @@ class Animation
 
     play() 
     {
-        playing = true;
-        this.playingInterval = setInterval(() => {this.animationStep()}, 200);
+        if (!playing) {
+            playing = true;
+            this.playingInterval = setInterval(() => {this.animationStep()}, 200);
+        }
     }
      
     stop() 
     {
         playing = false;
         clearTimeout(this.playingInterval);
+        this.update();
+    }
+    
+    deleteStep() 
+    {
+     if (this.stepCount > 0)   {
+         this.leds.forEach(led => {
+            led.removeStep(this.currentIndex);
+            led.update_state(this.currentIndex - 1);
+            
+         });
+         console.log(this.colors)
+         this.colors.splice(this.currentIndex, 1);
+         console.log(this.colors)
+         if (this.currentIndex != 0)
+            this.currentIndex--;
+         this.stepCount--;
+         this.update();
+     }
     }
     
     draw() 
@@ -230,12 +279,21 @@ class Led
 
     }
 
+    removeStep(idx) {
+        this.colorState.splice(idx, 1)
+    }
     hasColorInState(state, color) {
         return this.colorState[state] == color;
     }
 
-    getIndex() {
+    getIndex()
+    {
         return this.y * CONFIG["grid_length"] + this.x;
+    }
+
+    copyLast() 
+    {
+        this.colorState[this.currentState] = this.colorState[this.currentState - 1];
     }
 
     checkCollision(x, y) 
@@ -397,4 +455,16 @@ function clear_all() {
 
 function export_format() {
     animation.export();
+}
+
+function removeStep() {
+    animation.deleteStep();
+}
+
+function newStep() {
+    animation.newStep();
+}
+
+function copyLast() {
+    animation.newStep(true)
 }
