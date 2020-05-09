@@ -1,6 +1,7 @@
 var CTX;
 
 var CONFIG = {
+    "animation_timing_ms": 100,
     "none_color": "#333",
     "grid_height": 12,
     "grid_length": 30,
@@ -10,6 +11,7 @@ var CONFIG = {
 
 var animation; 
 var playing = false;
+var insertAtTheEnd = false;
 
 /* pencil, eraser */
 var mode = "pencil"
@@ -149,22 +151,39 @@ class Animation
         this.update_led_state();
         this.draw();
     }
-    newStep(copyLast = false) 
+    
+    insertStep() 
+    {
+        this.leds.forEach(led => {
+            led.insert();
+        });
+    }
+    newStep(copy = false) 
     {
         this.stepCount++;
-        this.currentIndex = this.stepCount;
-        this.colors.push({});
+        var previousIndex = this.currentIndex;
+        if (insertAtTheEnd) {
+            this.currentIndex = this.stepCount;
+            this.colors.push({});
+        } else {
+            this.currentIndex++;
+            this.colors.splice(this.currentIndex, 0, {});
+            this.insertStep();
+        }
+
         this.update();
 
-        if (copyLast && this.stepCount >= 1) 
+        if (copy && this.stepCount > 0) 
         {
-            for (const color of Object.keys(this.colors[this.currentIndex - 1])) 
+            console.log(previousIndex);
+            console.log(this.colors);
+            for (const color of Object.keys(this.colors[previousIndex])) 
             {
                 this.colors[this.currentIndex][color] = 1;
             }
 
             this.leds.forEach(led => {
-                led.copyLast();
+                led.copyIndex(previousIndex);
             });
         }
         this.update();
@@ -222,7 +241,7 @@ class Animation
     {
         if (!playing) {
             playing = true;
-            this.playingInterval = setInterval(() => {this.animationStep()}, 200);
+            this.playingInterval = setInterval(() => {this.animationStep()}, CONFIG["animation_timing_ms"]);
         }
     }
      
@@ -241,9 +260,7 @@ class Animation
             led.update_state(this.currentIndex - 1);
             
          });
-         console.log(this.colors)
          this.colors.splice(this.currentIndex, 1);
-         console.log(this.colors)
          if (this.currentIndex != 0)
             this.currentIndex--;
          this.stepCount--;
@@ -291,9 +308,15 @@ class Led
         return this.y * CONFIG["grid_length"] + this.x;
     }
 
-    copyLast() 
+    insert() {
+        this.colorState.splice(this.currentState + 1, 0,  CONFIG["none_color"]);
+    }
+
+    copyIndex(idx) 
     {
-        this.colorState[this.currentState] = this.colorState[this.currentState - 1];
+        console.log(idx)
+        console.log(this.colorState)
+        this.colorState[this.currentState] = this.colorState[idx];
     }
 
     checkCollision(x, y) 
@@ -352,14 +375,16 @@ function clear_canvas()
 
 function update_current_step() 
 {
-    var e = document.getElementById("currentStep")
-    e.innerHTML = animation.currentIndex + 1;
+    $(".totalSteps").each(function() {
+        this.innerHTML = animation.stepCount + 1;
+    })
 }
 
 function update_total_steps() 
 {
-    var e = document.getElementById("totalSteps")
-    e.innerHTML = animation.stepCount + 1;
+    $(".currentStep").each(function() {
+        this.innerHTML = animation.currentIndex + 1;
+    })
 }
 function start_draw() 
 {
@@ -465,6 +490,10 @@ function newStep() {
     animation.newStep();
 }
 
-function copyLast() {
+function copyStep() {
     animation.newStep(true)
+}
+
+function insertAfter(v){
+    insertAtTheEnd = v;
 }

@@ -4,6 +4,7 @@ body {
 }
 
 #canvas {
+    margin-top: 20px;
     cursor: url('pencilsmall.png') -10 40, pointer;
 }
 #toolbar {
@@ -27,6 +28,8 @@ body {
 
 #steps {
     font-weight: 700;
+    font-size: 28px;
+    color: #ddd;
 }
 
 #controls {
@@ -35,8 +38,23 @@ body {
 
 #controls .button {
     width: 100px;
+        vertical-align: top;
 }
 
 #controls .button .icon {
     margin-left: -12px;
+}
+
+#overlay {
+    position: absolute;
+    background-color: #333;
+    width: 1093px;
+    margin-top: 20px;
+    height: 427px;
+    opacity: 0.6;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 200px;
+    font-size: 120px;
+
 }

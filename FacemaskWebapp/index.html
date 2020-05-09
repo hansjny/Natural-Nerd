@@ -2,7 +2,7 @@
 
 <head>
     <script src="animation_app.js"></script>
-    <script src="jquery-3.5.1.slim.min.js"></script>
+    <script src="jquery-3.5.1.min.js"></script>
     <script src="jscolor.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,400;0,700;1,200;1,300;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="semantic-ui/semantic.min.css">
@@ -14,11 +14,15 @@
 <body>
     <div id="painting_area" style="display: flex">
         <div id="animationArea" style="flex: 0 0 65%; max-width: 1117px; background-color: #111; padding: 10 10 10 10; display: inline-block;">
+        <span id="steps"><span class="currentStep">0</span> OF <span class="totalSteps">0</span></span>
+            <div id="overlay">
+                <span id="overlay_steps"><span class="currentStep">0</span></span>
+            </div>
             <canvas id="canvas" width="1093" height="427">
 
             </canvas>
         </div>
-        <div id="toolbar" style="">
+        <div id="toolbar">
             <p>TOOLBAR</p>
         <p><div class="ui vertical animated button" tabindex="0" onClick="set_mode('pencil')">
             <i class="pencil alternate icon"></i>
@@ -50,21 +54,35 @@
         <div class="ui vertical animated button" tabindex="0" onClick="stop()">
             <i class="pause icon"></i>
         </div>
-        <div class="ui vertical animated button" style="width:130px" tabindex="0" onClick="newStep()">
+        <div style="margin-top: -4px; display: inline-block; background-color: #fff; border: 1px #111 solid; border-radius: 5px; padding: 4 4 8 4;">
+        <div id="newstep" class="ui vertical animated button" style="width:130px" tabindex="0" onClick="newStep()">
             <span style="margin-left:-10px">New step</span>
         </div>
-        <div class="ui vertical animated button" style="width:130px" tabindex="0" onClick="copyLast()">
-            <span style="margin-left:-10px">Copy last</span>
+        <div id="dupestep" class="ui vertical animated button" title="Duplicates the step you are viewing, and places it at the end" style="width:150px" tabindex="0" onClick="copyStep()">
+            <span style="margin-left:-10px">Duplicate this step</span>
         </div>
-        <div class="ui vertical animated button" style="width:130px" tabindex="0" onClick="removeStep()">
+        <p style="margin-top: 10px; font-size: 12px;"><input onChange="insertAfter(this.checked)" type="checkbox"/><span style="position: relative; top:-3px">Insert step at the end instead of after current step</span></p>
+    </div>
+
+        <div id="delstep" class="ui vertical animated button" style="width:130px" tabindex="0" onClick="removeStep()">
             <span style="margin-left:-10px">Remove step</span>
         </div>
-        <span id="steps">STEP <span id="currentStep">0</span> OF <span id="totalSteps">0</span></span>
     </div>
 </body>
 
 </html>
 
 <script type="text/javascript">
+    function stepFade() {
+        $("#overlay").stop();
+        $("#overlay").fadeIn(0, function(){
+            $("#overlay").fadeOut(600);
+
+        });
+    }
+    $("#newstep").click(function() { stepFade() });
+    $("#dupestep").click(function() { stepFade() });
+    $("#delstep").click(function() { stepFade() });
+    $("#overlay").hide();
     start_draw();
 </script>
