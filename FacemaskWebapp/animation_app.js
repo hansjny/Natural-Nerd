@@ -194,6 +194,9 @@ class Animation
         if (this.currentIndex < this.stepCount) {
             this.currentIndex++;
         }
+        else {
+            this.currentIndex = 0;
+        }
         this.update();
     }
     
@@ -436,6 +439,7 @@ function start_draw()
     }
 
 }
+
 
 function step_forward() 
 {

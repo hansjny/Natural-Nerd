@@ -22,6 +22,10 @@ body {
     width: 100%
 }
 
+#toolbar .text {
+    margin-left: -7px;
+}
+
 #toolbar .button .icon {
     margin-left: -12px;
 }

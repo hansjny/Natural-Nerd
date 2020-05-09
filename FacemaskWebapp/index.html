@@ -25,41 +25,44 @@
         <div id="toolbar">
             <p>TOOLBAR</p>
         <p><div class="ui vertical animated button" tabindex="0" onClick="set_mode('pencil')">
-            <i class="pencil alternate icon"></i>
+            <i class="pencil alternate icon"></i> (f)
         </div></p>
             <input class="jscolor {mode:'HS', position:'right'}" style="height:70px; width: 70px; text-align:center" onchange=set_color(this.jscolor)>
         <p><div class="ui vertical animated button" tabindex="0" onClick="set_mode('eraser')">
-            <i class="eraser icon"></i>
+            <i class="eraser icon"></i> (e)
         </div></p>
+        <!-- <p><div class="ui button" tabindex="0" onClick="set_mode('eraser')">
+            <div class="text">Define preset</div>
+        </div></p> -->
         <p style='margin-top: 140px;'>
             <div class="ui button" tabindex="0" onClick="clear_all()">
-            Clear all
+            <div class="text">Clear all</div>
         </div></p>
          <p><div class="ui button" tabindex="0" onClick="export_format  ()">
-                Export
+            <div class="text">Export</div>
         </div></p>
         </div>
     </div>  
 
     <div id="controls">
         <div class="ui vertical animated button" tabindex="0" onClick="step_backward()">
-            <i class="step backward icon"></i>
+            <i class="step backward icon"></i> (a)
         </div>
         <div class="ui vertical animated button" tabindex="0" onClick="step_forward()">
-            <i class="step forward icon"></i>
+            <i class="step forward icon"></i> (d)
         </div>
         <div class="ui vertical animated button" tabindex="0" onClick="play()">
-            <i class="play icon"></i>
+            <i class="play icon"></i> (space)
         </div>
         <div class="ui vertical animated button" tabindex="0" onClick="stop()">
             <i class="pause icon"></i>
         </div>
         <div style="margin-top: -4px; display: inline-block; background-color: #fff; border: 1px #111 solid; border-radius: 5px; padding: 4 4 8 4;">
         <div id="newstep" class="ui vertical animated button" style="width:130px" tabindex="0" onClick="newStep()">
-            <span style="margin-left:-10px">New step</span>
+            <span style="margin-left:-10px">New step</span> (q)
         </div>
-        <div id="dupestep" class="ui vertical animated button" title="Duplicates the step you are viewing, and places it at the end" style="width:150px" tabindex="0" onClick="copyStep()">
-            <span style="margin-left:-10px">Duplicate this step</span>
+        <div id="dupestep" class="ui vertical animated button" title="Duplicates the step you are viewing, and places it at the end" style="width:160px" tabindex="0" onClick="copyStep()">
+            <span style="margin-left:-10px">Duplicate this step</span> (r)
         </div>
         <p style="margin-top: 10px; font-size: 12px;"><input onChange="insertAfter(this.checked)" type="checkbox"/><span style="position: relative; top:-3px">Insert step at the end instead of after current step</span></p>
     </div>
@@ -85,4 +88,40 @@
     $("#delstep").click(function() { stepFade() });
     $("#overlay").hide();
     start_draw();
+
+$(document).keydown(function(e) {
+    console.log("hey")
+    switch(e.which) {
+        case 69:
+            set_mode("eraser");
+        break;
+        case 70:
+            set_mode("pencil");
+        break;
+        case 81:
+            newStep();
+        break;
+        case 82:
+            copyStep();
+        break;
+        case 65:
+        case 37: 
+            step_backward();
+        break;
+        case 68:
+        case 39: 
+            step_forward();
+        break;
+        case 32: 
+            if(playing) 
+                animation.stop();
+            else
+                animation.play();
+            break;
+        break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+});
 </script>
