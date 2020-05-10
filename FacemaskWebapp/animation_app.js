@@ -2,7 +2,7 @@ var CTX;
 
 var CONFIG = {
     "animation_timing_ms": 100,
-    "none_color": "#333",
+    "none_color": "#333333",
     "grid_height": 12,
     "grid_length": 30,
     "led_size": 20,
@@ -12,6 +12,7 @@ var CONFIG = {
 var animation; 
 var playing = false;
 var insertAtTheEnd = false;
+var colorPicking = false;
 
 /* pencil, eraser */
 var mode = "pencil"
@@ -53,11 +54,19 @@ class Animation
         this.colors = [{}]
     }
 
-    click_led(x, y) 
+    clickLed(x, y) 
     {
         for (let i = 0; i < CONFIG["grid_height"] * CONFIG["grid_length"]; i++) {
             if (this.leds[i].checkCollision(x, y)) {
-                if (mode == "pencil") {
+                if (colorPicking) {
+                    let color = this.leds[i].getColor()
+                    if (color != CONFIG["none_color"]) {
+                        this.setColor(color.substr(1));
+                        document.getElementById("colorpicker").jscolor.fromString(color);
+                        console.log("setting color", color)
+                    }
+                }
+                else if (mode == "pencil") {
                         this.leds[i].updateColor(this.use_color);
                         this.colors[this.currentIndex][this.use_color] = 1;
                 }
@@ -148,7 +157,7 @@ class Animation
 
     update() 
     {
-        this.update_led_state();
+        this.updateLedState();
         this.draw();
     }
     
@@ -175,8 +184,6 @@ class Animation
 
         if (copy && this.stepCount > 0) 
         {
-            console.log(previousIndex);
-            console.log(this.colors);
             for (const color of Object.keys(this.colors[previousIndex])) 
             {
                 this.colors[this.currentIndex][color] = 1;
@@ -189,7 +196,7 @@ class Animation
         this.update();
     }
 
-    step_forward() 
+    stepForward() 
     {
         if (this.currentIndex < this.stepCount) {
             this.currentIndex++;
@@ -200,14 +207,14 @@ class Animation
         this.update();
     }
     
-    clear_all() 
+    clearAll() 
     {
         this.leds.forEach(led => {
             led.updateColor(CONFIG["none_color"]);
         });
         this.update();
     }
-    step_backward() 
+    stepBackward() 
     {
         this.currentIndex--;
         if (this.currentIndex < 0)
@@ -215,10 +222,10 @@ class Animation
         this.update();
     }
 
-    update_led_state() 
+    updateLedState() 
     {
         this.leds.forEach(led => {
-            led.update_state(this.currentIndex)
+            led.updateState(this.currentIndex)
         });
     }
 
@@ -235,7 +242,7 @@ class Animation
         this.update();
     }
     
-    set_color(color)
+    setColor(color)
     {
         this.use_color = "#" + color;
     }
@@ -260,7 +267,7 @@ class Animation
      if (this.stepCount > 0)   {
          this.leds.forEach(led => {
             led.removeStep(this.currentIndex);
-            led.update_state(this.currentIndex - 1);
+            led.updateState(this.currentIndex - 1);
             
          });
          this.colors.splice(this.currentIndex, 1);
@@ -273,9 +280,9 @@ class Animation
     
     draw() 
     {
-        clear_canvas()
-        update_current_step()
-        update_total_steps()
+        clearCanvas()
+        updateCurrentStep()
+        updateTotalSteps()
         this.leds.forEach(led => {
            led.draw(); 
         });
@@ -306,6 +313,11 @@ class Led
         return this.colorState[state] == color;
     }
 
+    getColor() 
+    {
+        return this.colorState[this.currentState];
+    }
+
     getIndex()
     {
         return this.y * CONFIG["grid_length"] + this.x;
@@ -317,8 +329,6 @@ class Led
 
     copyIndex(idx) 
     {
-        console.log(idx)
-        console.log(this.colorState)
         this.colorState[this.currentState] = this.colorState[idx];
     }
 
@@ -332,7 +342,7 @@ class Led
         this.colorState[this.currentState] = color;
     }
 
-    update_state(step) 
+    updateState(step) 
     {
         this.currentState = step;
         if (step == this.colorState.length) {
@@ -360,7 +370,7 @@ class Led
         CTX.stroke();
     }
 
-    draw_shadow() {
+    drawShadow() {
         CTX.beginPath();
         CTX.fillStyle = this.colorState[this.currentState];
         CTX.shadowBlur = 20;
@@ -371,25 +381,25 @@ class Led
 }
 
 
-function clear_canvas() 
+function clearCanvas() 
 {
     CTX.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function update_current_step() 
+function updateCurrentStep() 
 {
     $(".totalSteps").each(function() {
         this.innerHTML = animation.stepCount + 1;
     })
 }
 
-function update_total_steps() 
+function updateTotalSteps() 
 {
     $(".currentStep").each(function() {
         this.innerHTML = animation.currentIndex + 1;
     })
 }
-function start_draw() 
+function startDraw()
 {
     var mouse_down = false;
     var c = document.getElementById("canvas");
@@ -411,7 +421,7 @@ function start_draw()
 
     c.onclick = function(e) 
     { 
-        if (animation.click_led(e.offsetX, e.offsetY) ) 
+        if (animation.clickLed(e.offsetX, e.offsetY) ) 
         {
             animation.draw();
         }
@@ -426,9 +436,9 @@ function start_draw()
     {
         if (mouse_down) 
         {
-            if (animation.click_led(e.offsetX, e.offsetY) ) 
+            if (animation.clickLed(e.offsetX, e.offsetY) ) 
             {
-                clear_canvas()
+                clearCanvas()
                 animation.draw();
             }
         }
@@ -441,14 +451,14 @@ function start_draw()
 }
 
 
-function step_forward() 
+function stepForward() 
 {
-    animation.step_forward();
+    animation.stepForward();
 }
 
-function step_backward() 
+function stepBackward() 
 {
-    animation.step_backward();
+    animation.stepBackward();
 }
 
 function play() 
@@ -461,13 +471,14 @@ function stop()
     animation.stop();
 }
 
-function set_color(color) 
+function setColor(color) 
 {
-    animation.set_color(color);
+    animation.setColor(color);
 }
 
-function set_mode(m) 
+function setMode(m) 
 {
+    colorPicking = false;
     mode = m
     if (mode == "pencil") {
         $('#canvas').css({'cursor': "url('pencilsmall.png') -10 40, pointer"});
@@ -478,11 +489,11 @@ function set_mode(m)
     }
 }
 
-function clear_all() {
-    animation.clear_all()
+function clearAll() {
+    animation.clearAll()
 }
 
-function export_format() {
+function exportFormat() {
     animation.export();
 }
 
@@ -500,4 +511,14 @@ function copyStep() {
 
 function insertAfter(v){
     insertAtTheEnd = v;
+}
+
+function colorPick(v) {
+    colorPicking = v;
+    if (colorPicking) {
+        $('#canvas').css({'cursor': "url('eyedropper.png') -10 40, pointer"});
+    }
+    else {
+        setMode(mode);
+    }
 }
