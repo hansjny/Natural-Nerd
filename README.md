@@ -2,6 +2,8 @@
 This repository contains a collection of code to Arduino and other projects. Mainly LEDs/Arduino. 
 
 #### Project
+* [Facemask](https://github.com/hansjny/Natural-Nerd/blob/master/arduino/facemask.ino)
+* [Whimsical Lantern Torch](https://github.com/hansjny/Natural-Nerd/blob/master/arduino/lantern_torch.ino)
 * [LED Laser Gun](https://github.com/hansjny/Natural-Nerd/blob/master/arduino/led_gun.ino)
 * [Enchanted Book Effect](https://github.com/hansjny/Natural-Nerd/blob/master/arduino/enchanted_book_fade.ino)
 * [Torch LED Code](https://github.com/hansjny/Natural-Nerd/blob/master/arduino/torchlight.ino)
