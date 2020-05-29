@@ -15,9 +15,10 @@
 
 #define BRIGHTNESS_DIVIDER 3
 
+//The CS pin on the SDCARD
+#define CHIP_SELECT SS;
 CRGB leds[NUM_LEDS];
 
-const uint8_t chipSelect = SS;
 uint8_t stepsInAnimation = 0;
 uint8_t currentStep = 1;
 uint16_t bytesRead = 0;
@@ -138,7 +139,7 @@ void setup()
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   leds[0] = CRGB(255, 255, 255);
 
-  while (!SD.begin()) 
+  while (!SD.begin(CHIP_SELECT)) 
   {
     delay(1000);
   }
