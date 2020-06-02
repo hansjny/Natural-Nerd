@@ -1,6 +1,6 @@
 ### Brief explanation
 
-*Remember to include reactive_common.h in the same directory as the .ino files, else inclusion will fail. *
+*Remember to include reactive_common.h in the same directory as the .ino files, else inclusion will fail.*
 
 #### led_master.ino is for the controller with the microphone module. Needs to specify:
 * Button pin to change mode
