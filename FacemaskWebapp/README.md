@@ -13,7 +13,7 @@ uint8: total animation steps
     uint16: number of leds in this step
     uint16 led_indexes[] 
 //step 2
- uin16: numbers of colors in this step,
+    uint16: numbers of colors in this step,
     uint8: r,
     uint8: g,
     uint8: b,
