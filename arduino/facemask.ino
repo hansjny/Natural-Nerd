@@ -16,7 +16,8 @@
 #define BRIGHTNESS_DIVIDER 3
 
 //The CS pin on the SDCARD
-#define CHIP_SELECT SS;
+#define CHIP_SELECT SS
+
 CRGB leds[NUM_LEDS];
 
 uint8_t stepsInAnimation = 0;
