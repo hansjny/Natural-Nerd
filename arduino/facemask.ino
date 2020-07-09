@@ -1,3 +1,4 @@
+/* Written guide by benny93: https://github.com/hansjny/Natural-Nerd/blob/master/arduino/readme.md /*
 #include <SPI.h>
 #include <SD.h>
 #include <FastLED.h>
