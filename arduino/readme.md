@@ -1,5 +1,5 @@
 ### LED Facemask writeup
-Written by bennyd93
+Written by [bennyd93](https://github.com/bennyd93)
 
 I have successfully completed the wiring and done a more thorough diagram, so that anyone can see it. In my project I took power and ground for the LEDs off of the 5v and gnd pins as i was only using 256 Leds (8x32 LEDS)
 **Note: you will have to change the variables in the ardiuno code and face mask webapp code if you use a different amount to the ones in the video** 
