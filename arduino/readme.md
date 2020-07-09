@@ -1,4 +1,4 @@
-###LED Facemask writeup
+### LED Facemask writeup
 Written by bennyd93
 
 I have successfully completed the wiring and done a more thorough diagram, so that anyone can see it. In my project I took power and ground for the LEDs off of the 5v and gnd pins as i was only using 256 Leds (8x32 LEDS)
