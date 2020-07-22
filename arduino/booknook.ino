@@ -2,6 +2,21 @@
 #define NUM_LEDS 19
 #define LED_PIN 2
 
+#define STATIC_COLOR CHSV(30, 208, 127)
+#define DYNAMIC_COLOR CHSV(30, 208, 127)
+
+#define EXPLOSION_CHANCE 30 //1 in x chance every second
+#define DYNAMIC_CHANCE 10 // 1 in x chance every second
+
+/* Once a dynamic light has turned on or off, how long should we wait before
+ it can toggle again? The system will generate a random duration between these
+ limits. During that time, and randomly generated toggle events will be ignored */
+#define MIN_DYNAMIC_STAY_ONOFF 5
+#define MAX_DYNAMIC_STAY_ONOFF 8
+
+// How long do the on/off transitions take, 1000 = 1 second
+#define DYNAMIC_TOGGLE_DURATION_MILLISECONDS  1000
+
 CRGB leds[NUM_LEDS];
 
 enum LED_TYPE {
@@ -74,13 +89,15 @@ class LedGroup
 
 class DynamicLamp : public LedGroup
 {
-    CRGB m_staticColor;
-    const float m_ToggleLightChancePerSecond = 15; // 1/30 chance every second
+    CHSV m_staticColor;
+    const float m_ToggleLightChancePerSecond = DYNAMIC_CHANCE;
     bool m_lightsOn;
+    uint32_t dontChangeAgainUntil;
   public:
-    DynamicLamp(uint32_t t_indexes, size_t t_indexCount, CRGB t_color) : LedGroup(t_indexes, t_indexCount, TYPE_DYNAMIC), m_staticColor(t_color), m_lightsOn(true)
+    DynamicLamp(uint32_t t_indexes, size_t t_indexCount, CHSV t_color) : LedGroup(t_indexes, t_indexCount, TYPE_DYNAMIC), m_staticColor(t_color), m_lightsOn(true)
     {
       setColor(m_staticColor);
+      dontChangeAgainUntil = millis();
     }
 
     void tick()
@@ -88,9 +105,10 @@ class DynamicLamp : public LedGroup
       if (millis() - getLastTick() > 1000)
       {
         setLastTick();
-        if (random(0, m_ToggleLightChancePerSecond) == 1)
+        if (random(0, m_ToggleLightChancePerSecond) == 0)
         {
           toggle();
+        } else {
         }
       }
     }
@@ -102,15 +120,54 @@ class DynamicLamp : public LedGroup
 
     void toggle()
     {
-      if (m_lightsOn)
+      if (millis() >= dontChangeAgainUntil)
       {
-        setColor(CRGB(0, 0, 0));
+        //Serial.println("Changed");
+        if (m_lightsOn)
+        {
+          turnOffSlowly();
+        }
+        else
+        {
+          turnOnSlowly(m_staticColor);
+        }
+        m_lightsOn = !m_lightsOn;
+
+        dontChangeAgainUntil = millis() + random(MIN_DYNAMIC_STAY_ONOFF * 1000, MIN_DYNAMIC_STAY_ONOFF * 1000);
+
       }
-      else
+      else {
+        //Serial.println("Should have changed but didn't");
+      }
+
+    }
+
+    void turnOffSlowly()
+    {
+      CHSV color;
+
+      for (int i = m_staticColor.val; i >= 0; i--)
       {
-        setColor(m_staticColor);
+        color = CHSV( m_staticColor.hue, m_staticColor.sat, i);
+        setColor(color);
+
+        FastLED.show();
+        delay(DYNAMIC_TOGGLE_DURATION_MILLISECONDS / m_staticColor.val);
       }
-      m_lightsOn = !m_lightsOn;
+    }
+
+    void turnOnSlowly(CHSV targetColor)
+    {
+      CHSV color;
+
+      for (int i = 0; i <= targetColor.val; i++)
+      {
+        color = CHSV( targetColor.hue, targetColor.sat, i);
+        setColor(color);
+
+        FastLED.show();
+        delay(DYNAMIC_TOGGLE_DURATION_MILLISECONDS / targetColor.val);
+      }
     }
 
 };
@@ -118,9 +175,9 @@ class DynamicLamp : public LedGroup
 class StaticLamp : public LedGroup
 {
   private:
-    CRGB m_staticColor;
+    CHSV m_staticColor;
   public:
-    StaticLamp(uint32_t t_indexes, size_t t_indexCount, CRGB t_color) : LedGroup(t_indexes, t_indexCount, TYPE_STATIC), m_staticColor(t_color)
+    StaticLamp(uint32_t t_indexes, size_t t_indexCount, CHSV t_color) : LedGroup(t_indexes, t_indexCount, TYPE_STATIC), m_staticColor(t_color)
     {
     }
 
@@ -192,7 +249,7 @@ class House
     unsigned long m_lastTick;
     uint16_t m_eventDelay;
     uint16_t m_eventCounter;
-    const uint16_t m_ToggleEventChancePerSecond = 30; // 1/30 chance every second
+    const uint16_t m_ToggleEventChancePerSecond = EXPLOSION_CHANCE;
 
 
     LedGroup* getLastGroup()
@@ -234,10 +291,10 @@ class House
       switch (t_type)
       {
         case TYPE_STATIC:
-          newGroup = new StaticLamp(indexes, length, CRGB(255, 110, 15));
+          newGroup = new StaticLamp(indexes, length, STATIC_COLOR);
           break;
         case TYPE_DYNAMIC:
-          newGroup = new DynamicLamp(indexes, length, CRGB(255, 110, 15));
+          newGroup = new DynamicLamp(indexes, length, DYNAMIC_COLOR);
           break;
         case TYPE_EXPLOSION:
           hasEvents = true;
@@ -250,7 +307,7 @@ class House
       }
     }
 
-    void setAllColor(CRGB color)
+    void setAllColor(CHSV color)
     {
       LedGroup* current = groups;
       while (current != nullptr)
@@ -276,9 +333,6 @@ class House
       LedGroup* current = groups;
       while (current != nullptr)
       {
-        Serial.print(current->getType());
-        Serial.print(" ");
-        Serial.println(type);
         if (current->getType() == type)
         {
           current->specialTick();
@@ -293,31 +347,36 @@ class House
       if (millis() - m_lastTick > m_eventDelay) {
         m_lastTick = millis();
 
+        //Serial.println(m_eventPos);
+
         switch (m_eventPos)
         {
           case EVENT_ALL_BLACK:
+            //Serial.println("all black");
             m_eventDelay = 500;
-            setAllColor(CRGB(0, 0, 0));
+            setAllColor(CHSV(0, 0, 0));
             m_eventPos = EVENT_STATIC_FLICKER;
             break;
 
           //This is blocking for now. Should ideally use timers, no delays.
           case EVENT_STATIC_FLICKER:
+            //Serial.println("static flicker");
             for (int i = 0; i < random(3, 6); i++)
             {
-              setAllColor(CRGB(255, 110, 15));
+              setAllColor(STATIC_COLOR);
               FastLED.show();
               delay(random(0, 250));
-              setAllColor(CRGB(0, 0, 0));
+              setAllColor(CHSV(0, 0, 0));
               FastLED.show();
               delay(random(0, 450));
             }
-            Serial.println("static flicker");
-            setAllColor(CRGB(0, 0, 0));
+            ////Serial.println("static flicker");
+            setAllColor(CHSV(0, 0, 0));
             delay(2000);
             m_eventPos = EVENT_RANDOM_HUE_EXPLOSION;
             break;
           case EVENT_RANDOM_HUE_EXPLOSION:
+            //Serial.println("explosion");
             m_lastTick = millis();
             specialTick(TYPE_EXPLOSION);
             resetEvent();
@@ -343,7 +402,7 @@ class House
         {
           m_lastTick = millis();
 
-          if (random(0, m_ToggleEventChancePerSecond) == 1) {
+          if (random(0, m_ToggleEventChancePerSecond) == 0) {
             m_eventRunning = true;
           }
 
@@ -386,10 +445,17 @@ void createGroup() {
 }
 
 void setup() {
+
+
+
   randomSeed(analogRead(0));
   Serial.begin(9600);
   while (!Serial);
-  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
+  
+   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
+  
+  //Depending on your LEDs the above line needs to be different. Example for a WS2812B below.
+  //FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
 
   houses[0] = new House();
   houses[0]->createGroup(TYPE_STATIC, &house1_floor[0], (size_t)(sizeof(house1_floor) / sizeof(house1_floor[0])));
