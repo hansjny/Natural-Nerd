@@ -35,6 +35,12 @@
         <p><div class="ui vertical animated button" tabindex="0" onClick="colorPick(true)">
             <i class="eyedropper icon"></i> (alt)
         </div></p>
+        <p><div class="ui button" tabindex="0" onClick="saveToJsonFile()">
+            <div class="text" style="text-align: end;">save backup</div>
+        </div></p>
+        <p><div class="ui button" tabindex="0" onClick="$('#file-selector').click()">
+            <div class="text" style="text-align: end;">load backup</div>
+        </div></p>
         <p style='margin-top: 140px;'>
             <div class="ui button" tabindex="0" onClick="clearAll()">
             <div class="text">Clear all</div>
@@ -74,6 +80,10 @@
     </div>
 </body>
 
+<input type="file" id="file-selector" style="display: none;"/>
+<ul id="output"></ul>
+
+
 </html>
 
 <script type="text/javascript">
@@ -89,6 +99,7 @@
     $("#delstep").click(function() { stepFade() });
     $("#overlay").hide();
     startDraw();
+    attachFileLoaderHandler();
 
 $(document).keyup(function(e) {
         switch(e.which) {
