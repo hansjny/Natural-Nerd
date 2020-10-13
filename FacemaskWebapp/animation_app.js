@@ -177,7 +177,12 @@ class Animation
     loadFromJsonFile(jsonString)
     {
         this.playing = false;
-        var data = JSON.parse(jsonString);
+        var data = null;
+        try {
+            data = JSON.parse(jsonString);
+        } catch(e) {
+           return false;
+        }
         if (!data){
             return false;
         }
@@ -593,7 +598,7 @@ function readFile(file) {
             output.appendChild(li);
         }
         else{
-            li.textContent = `Failed to load animation file :(`;
+            li.textContent = `Failed to load backup animation file :(  Was it a .json file?`;
             output.appendChild(li);
         }
     });
