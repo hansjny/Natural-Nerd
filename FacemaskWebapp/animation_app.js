@@ -155,6 +155,63 @@ class Animation
 
     }
 
+    saveToJsonFile()
+    {
+        let data = {};
+        data.leds = this.leds;
+        data.stepCount = this.stepCount;
+        data.currentIndex = this.currentIndex;
+        data.colors = this.colors;
+        data.use_color = this.use_color;
+        const dataJson = JSON.stringify(data);
+        var blob = new Blob([dataJson], { type: "application/octet-stream" });
+        var blobUrl = URL.createObjectURL(blob);
+        window.location.replace(blobUrl);
+
+        var fileLink = document.createElement('a');
+        fileLink.href = blobUrl
+        fileLink.download = "animation.json"
+        fileLink.click();
+    }
+
+    loadFromJsonFile(jsonString)
+    {
+        this.playing = false;
+        var data = null;
+        try {
+            data = JSON.parse(jsonString);
+        } catch(e) {
+           return false;
+        }
+        if (!data){
+            return false;
+        }
+        clearAll();
+        var newLeds = [];
+        data.leds.forEach(led => {
+            var newLed = new Led(led.x, led.y);
+            newLed.colorState = led.colorState;
+            newLed.currentState = led.currentState;
+            newLed.size = led.size;
+            newLed.spacing = led.spacing;
+            newLed.posX = led.posX;
+            newLed.posY = led.posY;
+            newLeds.push(newLed);
+        });
+
+        this.leds = newLeds;
+        this.stepCount = data.stepCount;
+        this.currentIndex = data.currentIndex;
+        this.colors = data.colors;
+        this.use_color = data.use_color;
+        this.currentState = 0
+        this.update();
+
+        this.setColor(data.use_color.substr(1));
+        document.getElementById("colorpicker").jscolor.fromString(data.use_color);
+        return true;
+    }
+
     update() 
     {
         this.updateLedState();
@@ -447,9 +504,7 @@ function startDraw()
     {
         mouse_down = false;
     }
-
 }
-
 
 function stepForward() 
 {
@@ -497,6 +552,14 @@ function exportFormat() {
     animation.export();
 }
 
+function saveToJsonFile() {
+    animation.saveToJsonFile();
+}
+
+function loadFromJsonFile(jsonString) {
+    return animation.loadFromJsonFile(jsonString);
+}
+
 function removeStep() {
     animation.deleteStep();
 }
@@ -520,5 +583,42 @@ function colorPick(v) {
     }
     else {
         setMode(mode);
+    }
+}
+
+function readFile(file) {     
+    const reader = new FileReader();
+    reader.addEventListener('load', (event) => {
+        const result = event.target.result;
+        var loadResult = loadFromJsonFile(result);
+        const output = document.getElementById('output');
+        const li = document.createElement('li');
+        if (loadResult){
+            li.textContent = `Loaded animation file!`;
+            output.appendChild(li);
+        }
+        else{
+            li.textContent = `Failed to load backup animation file :(  Was it a .json file?`;
+            output.appendChild(li);
+        }
+    });
+    reader.readAsText(file);
+}
+
+function attachFileLoaderHandler(){
+    const output = document.getElementById('output');
+    if (window.FileList && window.File) {
+        document.getElementById('file-selector').addEventListener('change', event => {
+            output.innerHTML = '';
+            for (const file of event.target.files) {
+                const li = document.createElement('li');
+                const name = file.name ? file.name : 'NOT SUPPORTED';
+                //const type = file.type ? file.type : 'NOT SUPPORTED';
+                const size = file.size ? file.size : 'NOT SUPPORTED';
+                li.textContent = `File name: ${name}, size: ${size}`;
+                output.appendChild(li);
+                readFile(file);
+            }
+        }); 
     }
 }

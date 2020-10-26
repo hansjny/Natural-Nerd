@@ -35,7 +35,13 @@
         <p><div class="ui vertical animated button" tabindex="0" onClick="colorPick(true)">
             <i class="eyedropper icon"></i> (alt)
         </div></p>
-        <p style='margin-top: 140px;'>
+        <p><div class="ui button" tabindex="0" onClick="saveToJsonFile()">
+            <div class="text" style="text-align: end;">save backup</div>
+        </div></p>
+        <p><div class="ui button" tabindex="0" onClick="$('#file-selector').click()">
+            <div class="text" style="text-align: end;">load backup</div>
+        </div></p>
+        <p style='margin-top: 30px;'>
             <div class="ui button" tabindex="0" onClick="clearAll()">
             <div class="text">Clear all</div>
         </div></p>
@@ -59,21 +65,23 @@
             <i class="pause icon"></i>
         </div>
         <div style="margin-top: -4px; display: inline-block; background-color: #fff; border: 1px #111 solid; border-radius: 5px; padding: 4 4 8 4;">
-        <div id="newstep" class="ui vertical animated button" style="width:130px" tabindex="0" onClick="newStep()">
-            <span style="margin-left:-10px">New step</span> (q)
+            <div id="newstep" class="ui vertical animated button" style="width:130px" tabindex="0" onClick="newStep()">
+                <span style="margin-left:-10px">New step</span> (q)
+            </div>
+            <div id="dupestep" class="ui vertical animated button" title="Duplicates the step you are viewing, and places it at the end" style="width:160px" tabindex="0" onClick="copyStep()">
+                <span style="margin-left:-10px">Duplicate this step</span> (r)
+            </div>
+            <p style="margin-top: 10px; font-size: 12px;"><input onChange="insertAfter(this.checked)" type="checkbox"/><span style="position: relative; top:-3px">Insert step at the end instead of after current step</span></p>
         </div>
-        <div id="dupestep" class="ui vertical animated button" title="Duplicates the step you are viewing, and places it at the end" style="width:160px" tabindex="0" onClick="copyStep()">
-            <span style="margin-left:-10px">Duplicate this step</span> (r)
-        </div>
-        <p style="margin-top: 10px; font-size: 12px;"><input onChange="insertAfter(this.checked)" type="checkbox"/><span style="position: relative; top:-3px">Insert step at the end instead of after current step</span></p>
-    </div>
 
         <div id="delstep" class="ui vertical animated button" style="width:130px" tabindex="0" onClick="removeStep()">
             <span style="margin-left:-10px">Remove step</span>
         </div>
     </div>
-</body>
 
+    <input type="file" id="file-selector" style="display: none;"/>
+    <ul id="output"></ul>
+</body>
 </html>
 
 <script type="text/javascript">
@@ -89,6 +97,7 @@
     $("#delstep").click(function() { stepFade() });
     $("#overlay").hide();
     startDraw();
+    attachFileLoaderHandler();
 
 $(document).keyup(function(e) {
         switch(e.which) {
