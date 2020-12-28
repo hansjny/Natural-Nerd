@@ -94,7 +94,7 @@ class DynamicLamp : public LedGroup
     bool m_lightsOn;
     uint32_t dontChangeAgainUntil;
   public:
-    DynamicLamp(uint32_t t_indexes, size_t t_indexCount, CHSV t_color) : LedGroup(t_indexes, t_indexCount, TYPE_DYNAMIC), m_staticColor(t_color), m_lightsOn(true)
+    DynamicLamp(uint32_t* t_indexes, size_t t_indexCount, CHSV t_color) : LedGroup(t_indexes, t_indexCount, TYPE_DYNAMIC), m_staticColor(t_color), m_lightsOn(true)
     {
       setColor(m_staticColor);
       dontChangeAgainUntil = millis();
@@ -177,7 +177,7 @@ class StaticLamp : public LedGroup
   private:
     CHSV m_staticColor;
   public:
-    StaticLamp(uint32_t t_indexes, size_t t_indexCount, CHSV t_color) : LedGroup(t_indexes, t_indexCount, TYPE_STATIC), m_staticColor(t_color)
+    StaticLamp(uint32_t* t_indexes, size_t t_indexCount, CHSV t_color) : LedGroup(t_indexes, t_indexCount, TYPE_STATIC), m_staticColor(t_color)
     {
     }
 
@@ -199,7 +199,7 @@ class ExplosionLamp : public LedGroup
     uint16_t explosionDurationMs = 50;
     bool running;
   public:
-    ExplosionLamp(uint32_t t_indexes, size_t t_indexCount) : LedGroup(t_indexes, t_indexCount, TYPE_EXPLOSION), running(false)
+    ExplosionLamp(uint32_t* t_indexes, size_t t_indexCount) : LedGroup(t_indexes, t_indexCount, TYPE_EXPLOSION), running(false)
     {
     }
 
