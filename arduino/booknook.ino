@@ -39,7 +39,7 @@ class LedGroup
 {
   private:
     LED_TYPE m_type;
-    uint32_t* m_indexes;
+    uint32_t *m_indexes;
     size_t m_indexCount;
     unsigned long m_lastTick;
     unsigned long m_disruptiveEventRunning;
@@ -54,8 +54,8 @@ class LedGroup
     unsigned long setLastTick() {
       m_lastTick = millis();
     }
-    LedGroup* nextGroup;
-    LedGroup(uint32_t* t_indexes, size_t t_indexCount, LED_TYPE t_type) :
+    LedGroup *nextGroup;
+    LedGroup(uint32_t *t_indexes, size_t t_indexCount, LED_TYPE t_type) :
       m_indexes(t_indexes),
       m_indexCount(t_indexCount),
       m_lastTick(millis()),
@@ -68,7 +68,7 @@ class LedGroup
 
     void setColor(CRGB color)
     {
-      uint32_t* ptr = m_indexes;
+      uint32_t *ptr = m_indexes;
       for (int i = 0; i < m_indexCount; i++)
       {
         leds[*ptr].setRGB(color.r, color.g, color.b);
@@ -77,7 +77,7 @@ class LedGroup
     }
     void setColor(CHSV color)
     {
-      uint32_t* ptr = m_indexes;
+      uint32_t *ptr = m_indexes;
       for (int i = 0; i < m_indexCount; i++)
       {
         leds[*ptr].setHSV(color.hue, color.sat, color.val);
@@ -243,7 +243,7 @@ class House
 {
   private:
     bool hasEvents;
-    LedGroup* groups;
+    LedGroup *groups;
     DISRUPTIVE_EVENT_STAGES m_eventPos;
     bool m_eventRunning;
     unsigned long m_lastTick;
@@ -252,9 +252,9 @@ class House
     const uint16_t m_ToggleEventChancePerSecond = EXPLOSION_CHANCE;
 
 
-    LedGroup* getLastGroup()
+    LedGroup *getLastGroup()
     {
-      LedGroup* current = groups;
+      LedGroup *current = groups;
       while (current->nextGroup != nullptr)
       {
         current = current->nextGroup;
@@ -262,7 +262,7 @@ class House
       return current;
     }
 
-    void insertGroup(LedGroup* t_group)
+    void insertGroup(LedGroup *t_group)
     {
       if (groups == nullptr)
       {
@@ -287,7 +287,7 @@ class House
 
     void createGroup(LED_TYPE t_type, uint32_t* indexes, size_t length)
     {
-      LedGroup* newGroup = nullptr;
+      LedGroup *newGroup = nullptr;
       switch (t_type)
       {
         case TYPE_STATIC:
@@ -309,7 +309,7 @@ class House
 
     void setAllColor(CHSV color)
     {
-      LedGroup* current = groups;
+      LedGroup *current = groups;
       while (current != nullptr)
       {
         current->setColor(color);
@@ -319,7 +319,7 @@ class House
 
     bool normalTick()
     {
-      LedGroup* current = groups;
+      LedGroup *current = groups;
       while (current != nullptr)
       {
         current->tick();
@@ -330,7 +330,7 @@ class House
 
     bool specialTick(LED_TYPE type)
     {
-      LedGroup* current = groups;
+      LedGroup *current = groups;
       while (current != nullptr)
       {
         if (current->getType() == type)
@@ -425,7 +425,7 @@ class House
 };
 
 #define NUM_HOUSES 4
-House* houses[NUM_HOUSES];
+House *houses[NUM_HOUSES];
 uint32_t house1_floor[] = { 0, 2, 4, 6};
 uint32_t house1_room1[] = {3};
 uint32_t house1_explosion[] = {1, 5, 0, 6};
