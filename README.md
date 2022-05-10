@@ -37,12 +37,17 @@ Before uploading the sketch to your board you should change in ```nanohex.h``` t
 #define LED_PIN 27
 ```
 Additionaly the following lines should be edited in ```Hexaleaf4.ino``` in order to get connected with your WiFi and communicate it with BLYNK app.
-
 ```
 const char* ssid = "Your_SSID"; // The SSID (name) of the Wi-Fi network you want to connect to
 const char* pass = "Your_Password"; // The password of the Wi-Fi network
 const char* auth = "BlynkAuthenticationKey"; //The Blynk Authorization Token
 ```
+### BLYNK configuration
+Download Blynk App: [Android](http://j.mp/blynk_Android) or [iOS](http://j.mp/blynk_iOS) <p>
+Configuration can be found on [Blynk Config folder](https://github.com/limbo666/Hexaleaf_Blynk/tree/master/Blynk%20Config).<p>
+Follow the 7 images to create a similar BLYNK layout.
+  
+  
 ### Resourses
 The Hexagon lights 3d model based can be found on [Thingverse](https://www.thingiverse.com/thing:4615531). This model is based on Modern Hobbyist's project with reference to Nerd-Forge. For more info go to [Modern Hobbyist's video](https://www.youtube.com/watch?v=ERK9_q242q4) on youtube.
 
