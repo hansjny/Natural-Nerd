@@ -1,7 +1,32 @@
-### Hexaleaf_Blynk 
-This code should is created to work on an **ESP32** board and **WS2812B** based leds strips.
+## Hexaleaf_Blynk 
+### Introduction
+This code created to work on an **ESP32** board and **WS2812B** based leds strips.
 The color control should be done by **BLYNK** app.
+### Requirements
+This is an Arduino IDE based code. You you can upload this sketch using Arduino software, PlatformIO, or Visual Studio with VisualMicro plugin.<p>
+ESP32 board support should be added prior compiling and uploading and also and FastLED library is required.
+  
+### Code Improvements
+Following the guidence on BLYNK documentation changed the code on ```.ino``` by adding a timer to update the hexController.
+The following lines of code were added:
+  ```
+  //Declaration
+BlynkTimer timerUpdate; // Creating a blynk timer
 
+//Timer setup in Setup
+   timerUpdate.setInterval(10L, updateX); //Setup the timer to run every 10 millisec 
+   
+//Update function
+void updateX() // This function is called by the blynk timer
+{
+ hexController->update();
+}
+
+//Timer execution in Loop
+timerUpdate.run();   // Fire the timer to update hexController
+  ```
+  
+### Customization
 Before uploading the sketch to your board you should change in ```nanohex.h``` the following parameters according to your creation (number of hexagons, leds per hexagon, ESP32 control pin):
 ```
 /* Number of LEDs in each box/leaf */
@@ -18,10 +43,11 @@ const char* ssid = "Your_SSID"; // The SSID (name) of the Wi-Fi network you want
 const char* pass = "Your_Password"; // The password of the Wi-Fi network
 const char* auth = "BlynkAuthenticationKey"; //The Blynk Authorization Token
 ```
+### Resourses
 The Hexagon lights 3d model based can be found on [Thingverse](https://www.thingiverse.com/thing:4615531). This model is based on Modern Hobbyist's project with reference to Nerd-Forge. For more info go to [Modern Hobbyist's video](https://www.youtube.com/watch?v=ERK9_q242q4) on youtube.
 
 Original code by Nerd-Forge [Hexaleaf Aurora](https://github.com/hansjny/Natural-Nerd/tree/master/Hexaleaf)
 
-
+### Remarks
 _Archived folder contains all original codes from Nerd-Forge (which contains other projects as well), just for reference _
 
