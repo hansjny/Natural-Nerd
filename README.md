@@ -1,4 +1,4 @@
-## Hexaleaf_Blynk 
+## Hexaleaf Blynk 
 ### Introduction
 This code created to work on an **ESP32** board and **WS2812B** based leds strips.
 The color control should be done by **BLYNK** app.
@@ -44,8 +44,7 @@ const char* auth = "BlynkAuthenticationKey"; //The Blynk Authorization Token
 ```
 ### BLYNK configuration
 Download Blynk App: [Android](http://j.mp/blynk_Android) or [iOS](http://j.mp/blynk_iOS) <p>
-Configuration can be found on [Blynk Config folder](https://github.com/limbo666/Hexaleaf_Blynk/tree/master/Blynk%20Config).<p>
-Follow the 7 images to create a similar BLYNK layout.
+Configuration can be found on [Blynk Config folder](https://github.com/limbo666/Hexaleaf_Blynk/tree/master/Blynk%20Config). Follow the 7 provided images to create a similar BLYNK layout.
   
   
 ### Resourses
