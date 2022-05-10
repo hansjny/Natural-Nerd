@@ -53,5 +53,5 @@ The Hexagon lights 3d model based can be found on [Thingverse](https://www.thing
 Original code by Nerd-Forge [Hexaleaf Aurora](https://github.com/hansjny/Natural-Nerd/tree/master/Hexaleaf)
 
 ### Remarks
-_Archived folder contains all original codes from Nerd-Forge (which contains other projects as well), just for reference _
+_"Archived" folder contains all original codes from Nerd-Forge (which contains other projects as well), just for reference_
 
