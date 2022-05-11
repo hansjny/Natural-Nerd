@@ -58,7 +58,7 @@ The Hexagon lights 3D model can be found on [Thingverse](https://www.thingiverse
 Finally, the most detailed video presentation on Youtbe is from ZDeanzo:<p>
   [![ZDeanzo video](https://img.youtube.com/vi/nUz_oQ4jfH8/0.jpg)](https://www.youtube.com/watch?v=nUz_oQ4jfH8)
 <p>
-  I highly suggest to view his video. He is eplaining in detail the making proccess.
+  I highly suggest to view his video. He is explaining in detail the making proccess.
 
 Original code by Nerd-Forge [Hexaleaf Aurora](https://github.com/hansjny/Natural-Nerd/tree/master/Hexaleaf)
   
