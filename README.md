@@ -1,8 +1,9 @@
-## Hexaleaf Blynk 
+<img src="https://img.shields.io/badge/-ProjectForMakers-yellowgreen"> <img src="https://img.shields.io/badge/-Difficulty:EASY-purple"> 
+## Hexaleaf Blynk
 ![Hexaleaf blynk](https://raw.githubusercontent.com/limbo666/Hexaleaf_Blynk/master/Pics/hexagon.png?raw=true)
 ### Introduction
 This is an Arduino sketch. This code created to work on an **ESP32** board and **WS2812B** based leds strips.
-The control should be done using **BLYNK** app.
+The control should be done using **BLYNK** app. 
 
 ### Block Diagram
 
