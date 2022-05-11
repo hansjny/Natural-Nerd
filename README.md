@@ -4,6 +4,15 @@
 This is an Arduino sketch. This code created to work on an **ESP32** board and **WS2812B** based leds strips.
 The control should be done using **BLYNK** app.
 
+### Block Diagram
+
+<img src="https://raw.githubusercontent.com/limbo666/Hexaleaf_Blynk/master/Pics/Block%20Diagram.jpg" width="800" height="350">
+<p> The electronic circuitry is quite simple for the device. you can use any ESP32 based board with WS8212 ledstrip (also known as Neopixel).
+Be aware that each LED on the strip can draw up to 60mA of current when all three colors are ON (White color in full illumination). You must select a power source capable to cover the current needs of your hexaleaf.
+<p>
+In one of my creations I have used 18 LEDs on each hexagon in 7 hexagons in total. The total current needed was above 7A (18*7*60 = 7560) in this case and I was forced to buy a special 5V power supply (a 5V 8A power brick).  
+
+
 ### Requirements
 This is an Arduino IDE based code. You you can compile and upload this sketch using Arduino IDE, PlatformIO, or Visual Studio with VisualMicro plugin.<p>
 ESP32 board support should be added to your IDE prior compiling and uploading and also and FastLED library is required.
