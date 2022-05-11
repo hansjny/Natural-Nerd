@@ -15,8 +15,8 @@ In one of my creations I have used 18 LEDs on each hexagon in 7 hexagons in tota
 
 
 ### Programming
-As this is an Arduino based code, you you can compile and upload this sketch using Arduino IDE, PlatformIO, or Visual Studio with VisualMicro plugin.<p>
-ESP32 board support should be added to your IDE prior compiling and uploading and also and FastLED library is required.
+As this is an Arduino based code, you can compile and upload this sketch using Arduino IDE, PlatformIO or Visual Studio with VisualMicro plugin.<p>
+ESP32 board support should be added to your IDE using boards manager prior compiling and uploading. Also and FastLED and Blynk libraries are needed. You have to add these using the libraries manager.
   
 ### Code improvements to original
 With the original sketch the device was disconnected from blynk server and ESP32 was entwring to an eternal color loop.
