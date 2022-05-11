@@ -1,7 +1,9 @@
 ## Hexaleaf Blynk 
+![Hexaleaf blynk](https://raw.githubusercontent.com/limbo666/Hexaleaf_Blynk/master/Pics/hexagon.png?raw=true)
 ### Introduction
-This code created to work on an **ESP32** board and **WS2812B** based leds strips.
-The color control should be done by **BLYNK** app.
+This is an Arduino sketch. This code created to work on an **ESP32** board and **WS2812B** based leds strips.
+The control should be done using **BLYNK** app.
+
 ### Requirements
 This is an Arduino IDE based code. You you can compile and upload this sketch using Arduino IDE, PlatformIO, or Visual Studio with VisualMicro plugin.<p>
 ESP32 board support should be added to your IDE prior compiling and uploading and also and FastLED library is required.
@@ -22,7 +24,7 @@ BlynkTimer timerUpdate; // Creating a blynk timer
 //Update function
 void updateX() // This function is called by the blynk timer
 {
- hexController->update(); // This line moved here from loop() 
+ hexController->update(); // This line moved here from loop() this is actuall update command
 }
 
 //Timer execution in Loop
@@ -51,11 +53,16 @@ Blynk configuration steps can be found on [Blynk Config folder](https://github.c
   
   
 ### Resourses
-The Hexagon lights 3D model can be found on [Thingverse](https://www.thingiverse.com/thing:4615531). This model is based on Modern Hobbyist's project with reference to Nerd-Forge. For more info go to [Modern Hobbyist's video](https://www.youtube.com/watch?v=ERK9_q242q4) on youtube.
-This spcific 3D model is improved to be stronger and fix the cover snap dimension. 
+The Hexagon lights 3D model can be found on [Thingverse](https://www.thingiverse.com/thing:4615531). This model is based on Modern Hobbyist's project with reference to Nerd-Forge. For more info go to [Modern Hobbyist's video](https://www.youtube.com/watch?v=ERK9_q242q4) on youtube. This spcific 3D model is improved to be stronger and fix the cover snap dimension. 
+  
+Finally, the most detailed video presentation on Youtbe is from ZDeanzo:<p>
+  [![ZDeanzo video](https://img.youtube.com/vi/nUz_oQ4jfH8/0.jpg)](https://www.youtube.com/watch?v=nUz_oQ4jfH8)
+<p>
+  I highly suggest to view his video. He is eplaining in detail the making proccess.
 
 Original code by Nerd-Forge [Hexaleaf Aurora](https://github.com/hansjny/Natural-Nerd/tree/master/Hexaleaf)
+  
 
 ### Remarks
-_"Archived" folder contains all original codes from Nerd-Forge (which contains other projects as well not related to hexaleaf), just for reference_
+_"Archived" folder contains all original source codes from Nerd-Forge's Repository (which contains other projects as well not related to hexaleaf), just for reference_
 
