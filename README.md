@@ -1,4 +1,4 @@
-## THIS PROJECT MAKED AS OBSOLETE - The blynk is not supported anymore and it need to be updated to Blynk IoT
+## THIS PROJECT MAKED AS OBSOLETE [DEPRECATED] - The blynk is not supported anymore and it need to be updated to Blynk IoT
 
 
 
