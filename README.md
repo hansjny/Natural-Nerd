@@ -1,3 +1,7 @@
+### THIS PROJECT MAKED AS OBSOLETE - The blynk is not supported anymore and it need to be updated to Blynk IoT
+
+
+
 <img src="https://img.shields.io/badge/-ProjectForMakers-yellowgreen"> <img src="https://img.shields.io/badge/-Difficulty:EASY-purple"> 
 ## Hexaleaf Blynk
 ![Hexaleaf blynk](https://raw.githubusercontent.com/limbo666/Hexaleaf_Blynk/master/Pics/hexagon.png?raw=true)
