@@ -5,7 +5,7 @@ The control of the hexagons is switched to LAN based using a custom made windows
 Communication protocol is changed but the functions are the same with some additional stuff added. 
 
 <img src="https://img.shields.io/badge/-ProjectForMakers-yellowgreen"> <img src="https://img.shields.io/badge/-Difficulty:EASY-purple"> 
-## Hexaleaf Blynk
+## Hexaleaf
 ![enter image description here](https://github.com/limbo666/Hexaleaf_Blynk/blob/master_Hexaleaf_MKII/Pics/Hexaleaf_Hexagons.png?raw=true)
 
 
